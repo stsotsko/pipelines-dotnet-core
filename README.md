@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/TSkyNetS/Parts%20Unlimited/_apis/build/status/stsotsko.pipelines-dotnet-core?branchName=master)](https://dev.azure.com/TSkyNetS/Parts%20Unlimited/_build/latest?definitionId=6&branchName=master)
+
 # Sample ASP.NET Core application for Azure Pipelines docs
 
 For information on how to set up a pipeline for this repository, see [Create your first pipeline](https://docs.microsoft.com/azure/devops/pipelines/get-started-yaml?view=azure-devops).
