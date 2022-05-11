@@ -9,6 +9,34 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+parameters:
+  - name: installCert
+    displayName: Would you like to install a cert for Virtual Machine?
+    type: string
+    values:
+      - yes
+      - no
+  
+  - name: kvname
+    displayName: Please, put key vault name here
+    type: string
+    default: <keyvaultname[.vault.azure.net]>
+  
+  - name: vmname
+    displayName: Please, put virtual machine name or IP here
+    type: string
+    default: <virtualmachinename || IP>
+  
+  - name: keystorepath
+    displayName: Please, put complete key store path here
+    type: string
+    default: </$(java_home)/jre/lib/security/cacerts>
+
+  - name: cname
+    displayName: Please, put certificate name here
+    type: string
+    default: <certificatename.[cert-crt-pem]
+
 variables:
   buildConfiguration: 'Release'
 
