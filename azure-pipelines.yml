@@ -16,6 +16,7 @@ parameters:
     values:
       - yes
       - no
+    default: no
   
   - name: kvname
     displayName: Please, put key vault name here
