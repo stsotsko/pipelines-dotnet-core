@@ -1,46 +1,93 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+# # ASP.NET Core
+# # Build and test ASP.NET Core projects targeting .NET Core.
+# # Add steps that run tests, create a NuGet package, deploy, and more:
+# # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
-trigger:
-- master
+# trigger:
+# - master
+
+# pool:
+#   vmImage: ubuntu-latest
+
+# parameters:
+#   - name: installCert
+#     displayName: Would you like to install a cert for Virtual Machine?
+#     type: string
+#     values:
+#       - yes
+#       - no
+#     default: no
+  
+#   - name: kvname
+#     displayName: Please, put key vault name here
+#     type: string
+#     default: <keyvaultname[.vault.azure.net]>
+  
+#   - name: vmname
+#     displayName: Please, put virtual machine name or IP here
+#     type: string
+#     default: <virtualmachinename || IP>
+  
+#   - name: keystorepath
+#     displayName: Please, put complete key store path here
+#     type: string
+#     default: </$(java_home)/jre/lib/security/cacerts>
+
+#   - name: cname
+#     displayName: Please, put certificate name here
+#     type: string
+#     default: <certificatename.[cert-crt-pem]
+
+# variables:
+#   buildConfiguration: 'Release'
+
+# steps:
+# - script: dotnet build --configuration $(buildConfiguration)
+#   displayName: 'dotnet build $(buildConfiguration)'
+
+
+name: "[$(Build.BuildId)][$(Date:yyyyMMdd)][$(Build.RequestedFor)][$(Build.SourceBranchName)][$(Build.Reason)]"
+appendCommitMessageToRunName: false
+lockBehavior: sequential
+
+trigger: none
 
 pool:
   vmImage: ubuntu-latest
 
 parameters:
-  - name: installCert
-    displayName: Would you like to install a cert for Virtual Machine?
+  - name: DEPLOY_TST
     type: string
-    values:
-      - yes
-      - no
-    default: no
-  
-  - name: kvname
-    displayName: Please, put key vault name here
+    default: true
+  - name: DEPLOY_RND
     type: string
-    default: <keyvaultname[.vault.azure.net]>
-  
-  - name: vmname
-    displayName: Please, put virtual machine name or IP here
-    type: string
-    default: <virtualmachinename || IP>
-  
-  - name: keystorepath
-    displayName: Please, put complete key store path here
-    type: string
-    default: </$(java_home)/jre/lib/security/cacerts>
+    default: true
 
-  - name: cname
-    displayName: Please, put certificate name here
-    type: string
-    default: <certificatename.[cert-crt-pem]
+stages:
+  - stage: Deploy
+    displayName: Deploy Environments
+    jobs:
+      - deployment: Deploy_tst
+        displayName: Deploy Test
+        condition: eq( '${{ parameters.DEPLOY_TST }}', 'true' )
+        environment: test
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
 
-variables:
-  buildConfiguration: 'Release'
+                - download: none
 
-steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+      - deployment: Deploy_rnd
+        displayName: Deploy RnD
+        dependsOn: Deploy_tst
+        condition: eq( '${{ parameters.DEPLOY_RND }}', 'true' )
+        environment: test
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+
+                - download: none
