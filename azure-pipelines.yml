@@ -62,6 +62,9 @@ parameters:
   - name: DEPLOY_RND
     type: string
     default: true
+  - name: exitCode
+    type: number
+    default: 1
 
 stages:
   - stage: Deploy
@@ -79,10 +82,12 @@ stages:
 
                 - download: none
 
+                - script: exit ${{ parameters.exitCode }}
+
       - deployment: Deploy_rnd
         displayName: Deploy RnD
         dependsOn: Deploy_tst
-        condition: eq( '${{ parameters.DEPLOY_RND }}', 'true' )
+        condition: and(succeeded(), eq( '${{ parameters.DEPLOY_RND }}', 'true' ))
         environment: test
         strategy:
           runOnce:
