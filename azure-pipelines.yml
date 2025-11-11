@@ -87,7 +87,7 @@ stages:
       - deployment: Deploy_rnd
         displayName: Deploy RnD
         dependsOn: Deploy_tst
-        condition: and(succeeded(), eq( '${{ parameters.DEPLOY_RND }}', 'true' ))
+        condition: eq( '${{ parameters.DEPLOY_RND }}', 'true' )
         environment: test
         strategy:
           runOnce:
